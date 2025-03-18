@@ -13,25 +13,6 @@ const Base64 = struct {
         };
     }
 
-    fn _char_at(self: Base64, index: usize) u8 {
-        return self._table[index];
-    }
-
-    fn _char_index(self: Base64, char: u8) u8 {
-        if (char == '=') return 64;
-
-        var index: u8 = 0;
-
-        for (0..63) |i| {
-            if (self._char_at(i) == char)
-                break;
-
-            index += 1;
-        }
-
-        return index;
-    }
-
     pub fn encode(self: Base64, allocator: std.mem.Allocator, input: []const u8) ![]u8 {
         if (input.len == 0) {
             return "";
@@ -150,6 +131,26 @@ const Base64 = struct {
 
         return n_output * 3;
     }
+
+    fn _char_at(self: Base64, index: usize) u8 {
+        return self._table[index];
+    }
+
+    fn _char_index(self: Base64, char: u8) u8 {
+        if (char == '=') return 64;
+
+        var index: u8 = 0;
+
+        for (0..63) |i| {
+            if (self._char_at(i) == char)
+                break;
+
+            index += 1;
+        }
+
+        return index;
+    }
+
 };
 
 pub fn main() !void {
