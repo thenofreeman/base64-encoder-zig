@@ -47,10 +47,31 @@ const Base64 = struct {
             buf[count] = input[i];
             count += 1;
 
+            // let buf[0] = ABCDEFGH
+            //     buf[1] = IJKLMNOP
+            //     buf[2] = QRSTUVWX
             if (count == 3) {
+
+                // ABCDEFGH >> 2 => 00ABCDEF
+                // <- 00ABCDEF
                 out[iout] = self._char_at(buf[0] >> 2);
+
+                // ABCDEFGH & 0x03  => 000000GH (since 0x00 = 0b11)
+                // 000000GH << 4 => 00GH0000
+                // IJKLMNOP >> 4 => 0000IJKL
+                // 0000IJKL + 00GH0000 => 00GHIJKL
+                // <- 00GHIJKL
                 out[iout + 1] = self._char_at(((buf[0] & 0x03) << 4) + (buf[1] >> 4));
+
+                // IJKLMNOP & 0x0f => 0000MNOP (since 0x0f = 0b1111)
+                // 0000MNOP << 2 => 00MNOP00
+                // QRSTUVWX >> 6 => 000000QR
+                // 00MNOP00 + 000000QR => 00MNOPQR
+                // <- 00MNOPQR
                 out[iout + 2] = self._char_at(((buf[1] & 0x0f) << 2) + (buf[2] >> 6));
+
+                // QRSTUVWX & 0x3f => 00STUVWX (since 0x3f = 0b111111)
+                // <- 00STUVWX
                 out[iout + 3] = self._char_at(buf[2] & 0x3f);
 
                 iout += 4;
