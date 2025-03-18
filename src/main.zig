@@ -75,6 +75,40 @@ const Base64 = struct {
 
         return out;
     }
+
+    pub fn decode(self: Base64, allocator: std.mem.Allocator, input: []const u8) ![]u8 {
+        if (input.len == 0) {
+            return "";
+        }
+
+        const n_output = try _calc_decode_length(input);
+        var out = try allocator.alloc(u8, n_output);
+        var count: u8 = 0;
+        var iout: u64 = 0;
+        var buf = [4]u8{0, 0, 0, 0};
+
+        for (0..input.len) |i| {
+            buf[count] = self._char_index(input[i]);
+            count += 1;
+
+            if (count == 4) {
+                out[iout] = (buf[0] << 2) + (buf[1] >> 4);
+
+                if (buf[2] != 64) {
+                    out[iout + 1] = (buf[1] << 4) + (buf[2] >> 2);
+                }
+
+                if (buf[3] != 64) {
+                    out[iout + 2] = (buf[2] << 6) + buf[3];
+                }
+
+                iout += 3;
+                count = 0;
+            }
+        }
+
+        return out;
+    }
 };
 
 fn _calc_encode_length(input: []const u8) !usize {
