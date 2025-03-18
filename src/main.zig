@@ -113,9 +113,6 @@ const Base64 = struct {
 
 fn _calc_encode_length(input: []const u8) !usize {
     if (input.len < 3) {
-        // const n_output: usize = 4;
-        // return n_output;
-
         return 4;
     }
 
@@ -126,9 +123,6 @@ fn _calc_encode_length(input: []const u8) !usize {
 
 fn _calc_decode_length(input: []const u8) !usize {
     if (input.len < 4) {
-        // const n_output: usize = 3;
-        // return n_output;
-
         return 3;
     }
 
