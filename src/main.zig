@@ -51,7 +51,7 @@ const Base64 = struct {
                 out[iout] = self._char_at(buf[0] >> 2);
                 out[iout + 1] = self._char_at(((buf[0] & 0x03) << 4) + (buf[1] >> 4));
                 out[iout + 2] = self._char_at(((buf[1] & 0x0f) << 2) + (buf[2] >> 6));
-                out[iout + 3] = self._char_at((buf[2] & 0x3f) << 2);
+                out[iout + 3] = self._char_at(buf[2] & 0x3f);
 
                 iout += 4;
                 count = 0;
